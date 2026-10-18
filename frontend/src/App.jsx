@@ -3,6 +3,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./App.css";
 
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL || "{API_BASE_URL}"
+).replace(/\/$/, "");
+
 function App() {
   const [task, setTask] = useState("");
   const [loading, setLoading] = useState(false);
@@ -51,7 +55,7 @@ async function handleSubmit(event) {
     abortControllerRef.current = { controller, taskId };
 
     const response = await fetch(
-      "http://127.0.0.1:8000/api/tasks/stream",
+      "${API_BASE_URL}/api/tasks/stream",
       {
         method: "POST",
         headers: {
@@ -189,7 +193,7 @@ async function handleSubmit(event) {
       setError("");
     } else if (err instanceof TypeError) {
       setError(
-        "Could not connect to the backend. Check that the server is running at http://127.0.0.1:8000."
+        "Could not connect to the backend. Check that the server is running at ${API_BASE_URL}."
       );
     } else {
       setError(
@@ -391,7 +395,7 @@ function openHistoryItem(item) {
 
                         try {
                           const response = await fetch(
-                            `http://127.0.0.1:8000/api/tasks/${activeTask.taskId}/cancel`,
+                            `${API_BASE_URL}/api/tasks/${activeTask.taskId}/cancel`,
                             {
                               method: "POST",
                             }
