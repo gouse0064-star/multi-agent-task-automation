@@ -99,13 +99,21 @@ AGENT_INSTRUCTIONS = {
         "and expected outcomes."
     ),
     "analysis": (
-        "Analyze the task carefully. Explain relevant factors, compare "
-        "alternatives where appropriate, and state important assumptions."
+    "Analyze the user's task using the research evidence provided. "
+    "Use the retrieved sources to support factual claims. "
+    "Distinguish evidence from assumptions, compare alternatives "
+    "where appropriate, and identify gaps in the available evidence. "
+    "Never invent sources or claim that a source says something "
+    "that is not present in the supplied evidence."
     ),
     "verification": (
-        "Review the task and the preceding agent results. Identify "
-        "inconsistencies, missing information, unsupported claims, and "
-        "specific improvements. Do not claim external verification."
+    "Act as a critical reviewer of the preceding agent outputs. "
+    "Compare factual claims with the supplied research evidence. "
+    "Identify unsupported claims, contradictions, missing citations, "
+    "and outdated or incomplete information. "
+    "Separate supported findings from assumptions. "
+    "Do not claim to have independently opened or verified URLs. "
+    "Finish with a short list of recommended corrections."
     ),
 }
 
@@ -115,10 +123,26 @@ def run_specialized_agent(state: TaskState, agent_name: str) -> dict:
 
     previous_results = state.get("results", [])
 
-    context = "\n\n".join(
-        f"{item['agent']}:\n{item['output']}"
-        for item in previous_results
-    )
+    context_parts = []
+
+    for item in previous_results:
+        context_parts.append(
+            f"{item['agent']}:\n{item['output']}"
+        )
+
+    if state.get("research_sources"):
+        source_context = "\n\n".join(
+            f"Title: {source['title']}\n"
+            f"URL: {source['url']}\n"
+            f"Content: {source['content']}"
+            for source in state["research_sources"]
+        )
+
+        context_parts.append(
+            "RETRIEVED RESEARCH EVIDENCE:\n" + source_context
+        )
+
+    context = "\n\n".join(context_parts)
 
     model = get_model()
 
@@ -299,25 +323,32 @@ def run_task(task: str) -> dict:
 
     })
 
-    report = "\n\n".join(
-        f"### {item['agent']}\n{item['output']}"
-        for item in result["results"]
-    )
+    report_parts = []
+
+    for item in result["results"]:
+        report_parts.append(
+            f"## {item['agent']}\n\n{item['output']}"
+        )
 
     if result["research_sources"]:
-        report += "\n\n### Retrieved Sources\n"
+        source_lines = ["## Retrieved Sources"]
 
         for index, source in enumerate(
             result["research_sources"], start=1
         ):
-            report += (
-                f"\n{index}. {source['title']}\n"
-                f"   URL: {source['url']}\n"
+            source_lines.append(
+                f"{index}. {source['title']}\n"
+                f"   URL: {source['url']}"
             )
+
+        report_parts.append("\n".join(source_lines))
+
+    report = "\n\n---\n\n".join(report_parts)
 
     return {
         "task": task,
         "selected_agents": result["selected_agents"],
         "results": result["results"],
+        "research_sources": result["research_sources"],
         "final_report": report,
     }
