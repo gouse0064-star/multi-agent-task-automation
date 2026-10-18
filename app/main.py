@@ -1,4 +1,5 @@
-from app.task_engine import create_task_plan, display_task_plan
+
+from app.orchestrator import orchestrate_task
 
 
 def main():
@@ -10,8 +11,15 @@ def main():
         print("Please enter a valid task.")
         return
 
-    plan = create_task_plan(user_task)
-    display_task_plan(plan)
+    result = orchestrate_task(user_task)
+
+    print("\n===== ORCHESTRATOR RESULT =====")
+    print(f"Task: {result['task']}")
+    print(f"Status: {result['status']}")
+    print("\nAssigned agents:")
+
+    for index, agent in enumerate(result["agents"], start=1):
+        print(f"{index}. {agent}")
 
 
 if __name__ == "__main__":
