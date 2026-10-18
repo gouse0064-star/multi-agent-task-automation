@@ -3,7 +3,7 @@ from app.graph_workflow import run_task
 
 
 def main():
-    print("=== LangGraph AI Task System ===")
+    print("=== Multi-Agent Task Automation System ===")
 
     task = input("\nEnter your task: ").strip()
 
@@ -11,12 +11,21 @@ def main():
         print("Please enter a valid task.")
         return
 
-    print("\nProcessing your task...")
+    print("\nStarting multi-agent workflow...")
 
-    result = run_task(task)
+    try:
+        report = run_task(task)
 
-    print("\n===== AI GENERATED RESPONSE =====")
-    print(result["response"])
+        print("\n===== SELECTED AGENTS =====")
+        for agent in report["selected_agents"]:
+            print(f"- {agent.title()} Agent")
+
+        print("\n===== FINAL EXECUTION REPORT =====")
+        print(report["final_report"])
+
+    except Exception as error:
+        print(f"\nWorkflow failed: {error}")
+        print("Check your API key, model availability, and network connection.")
 
 
 if __name__ == "__main__":
