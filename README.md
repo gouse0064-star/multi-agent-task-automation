@@ -85,18 +85,7 @@ python -m venv .venv
 
 If `requirements.txt` is not present in the repository yet, create it with the project's actual Python dependencies before following this step.
 
-### 3. Configure environment variables
-
-Create a `.env` file in the project root:
-
-```env
-GROQ_API_KEY=your_groq_api_key
-TAVILY_API_KEY=your_tavily_api_key
-```
-
-Replace the placeholders with your own API keys. Never commit `.env` or publish API keys.
-
-### 4. Install frontend dependencies
+### 3. Install frontend dependencies
 
 ```powershell
 cd frontend
