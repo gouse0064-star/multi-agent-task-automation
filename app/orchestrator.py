@@ -1,36 +1,45 @@
 
-def assign_agents(user_task):
-    """Assign specialized agents based on the user's task."""
+from app.agents import (
+    research_agent,
+    planning_agent,
+    analysis_agent,
+    verification_agent,
+    general_agent,
+)
 
+
+def assign_agents(user_task):
     task = user_task.lower()
     assignments = []
 
     if any(word in task for word in ["research", "find", "search", "investigate"]):
-        assignments.append("Research Agent")
+        assignments.append(research_agent)
 
     if any(word in task for word in ["plan", "roadmap", "prepare", "learn"]):
-        assignments.append("Planning Agent")
+        assignments.append(planning_agent)
 
-    if any(word in task for word in ["analyze", "compare", "evaluate", "review"]):
-        assignments.append("Analysis Agent")
+    if any(word in task for word in ["analyze", "analysis", "compare", "evaluate", "review"]):
+        assignments.append(analysis_agent)
 
     if any(word in task for word in ["verify", "check", "validate"]):
-        assignments.append("Verification Agent")
+        assignments.append(verification_agent)
 
-    # Every task should have at least one assigned agent.
     if not assignments:
-        assignments.append("General Assistant Agent")
+        assignments.append(general_agent)
 
     return assignments
 
 
 def orchestrate_task(user_task):
-    """Create a task plan and assign agents to it."""
+    selected_agents = assign_agents(user_task)
+    results = []
 
-    agents = assign_agents(user_task)
+    for agent in selected_agents:
+        result = agent(user_task)
+        results.append(result)
 
     return {
         "task": user_task,
-        "agents": agents,
-        "status": "planned",
+        "status": "completed",
+        "results": results,
     }

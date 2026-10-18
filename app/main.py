@@ -11,15 +11,15 @@ def main():
         print("Please enter a valid task.")
         return
 
-    result = orchestrate_task(user_task)
+    report = orchestrate_task(user_task)
 
-    print("\n===== ORCHESTRATOR RESULT =====")
-    print(f"Task: {result['task']}")
-    print(f"Status: {result['status']}")
-    print("\nAssigned agents:")
+    print("\n===== EXECUTION REPORT =====")
+    print(f"Task: {report['task']}")
+    print(f"Status: {report['status']}")
 
-    for index, agent in enumerate(result["agents"], start=1):
-        print(f"{index}. {agent}")
+    for result in report["results"]:
+        print(f"\n--- {result['agent']} ---")
+        print(f"Result: {result['result']}")
 
 
 if __name__ == "__main__":
