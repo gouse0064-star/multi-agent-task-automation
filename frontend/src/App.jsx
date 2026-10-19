@@ -55,7 +55,7 @@ async function handleSubmit(event) {
     abortControllerRef.current = { controller, taskId };
 
     const response = await fetch(
-      "${API_BASE_URL}/api/tasks/stream",
+      `${API_BASE_URL}/api/tasks/stream`,
       {
         method: "POST",
         headers: {
