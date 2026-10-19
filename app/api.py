@@ -41,6 +41,7 @@ app.add_middleware(
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "https://multi-agent-task-automation-git-main-gouse7.vercel.app",
+        "https://multi-agent-task-automation-two.vercel.app",
     ],
     allow_credentials=False,
     allow_methods=["*"],
