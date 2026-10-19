@@ -193,7 +193,7 @@ async function handleSubmit(event) {
       setError("");
     } else if (err instanceof TypeError) {
       setError(
-        "Could not connect to the backend. Check that the server is running at ${API_BASE_URL}."
+        `Could not connect to the backend. Check that the server is running at ${API_BASE_URL}.`
       );
     } else {
       setError(
